@@ -51,7 +51,7 @@ module.exports = class State {
                 max = rank;
                 worst = partner;
             }
-        })
+        });
         return worst;
     }
 

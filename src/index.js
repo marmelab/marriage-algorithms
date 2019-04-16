@@ -3,7 +3,7 @@ const State = require('./State');
 
 const runGaleShapley = ({students,correctors}) => {
     const state = new State();
-    const start = process.hrtime()
+    const start = process.hrtime();
     const results = state.galeShapley(students).extractMatching();
     const end = process.hrtime(start);
 
@@ -13,7 +13,7 @@ const runGaleShapley = ({students,correctors}) => {
 
 const runRothShapley = ({students,correctors}) => {
     const state = new State();
-    const start = process.hrtime()
+    const start = process.hrtime();
     const results = state.rothShapley(students).extractMatching();
     const end = process.hrtime(start);
 
