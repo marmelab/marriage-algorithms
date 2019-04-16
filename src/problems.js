@@ -15,29 +15,6 @@ exports.genProblemN = (n) => {
     return {students, correctors};
 }
 
-// more students than correctors, but correctors with capacity
-exports.genProblemCapacities = (n, capacities) => {
-    const students = Array.from({length: n}, (v, i) => new Player(`Student${i}`));
-    const correctors = [];
-    Array.from({length: capacities.length}).forEach((v, i) => {
-        Array.from({length: capacities[i]}).forEach((w, j) => {
-            correctors.push(new Player(`Corrector${i}_${j}`));
-        })
-    });
-
-
-    students.forEach(student => {
-        student.addCandidates(correctors)
-    });
-    correctors.forEach(corrector => {
-        corrector.addCandidates(students)
-    });
-
-    // console.log(students);
-    // console.log(correctors);
-    return {students, correctors};
-}
-
 // example from tutorial: http://www.ams.org/publicoutreach/feature-column/fc-2015-03
 exports.genProblem1 = () => {
     const students = Array.from({length: 4}, (v, i) => new Player(`Student${i}`));
@@ -73,3 +50,62 @@ exports.genProblem2 = () => {
     return {students, correctors};
 }
 
+// 5 students and 2 correctors with capacity 2
+exports.genProblem3 = () => {
+    const students = Array.from({length: 5}, (v, i) => new Player(`Student${i}`));
+    const correctors = Array.from({length: 2}, (v, i) => new Player(`Corrector${i}`,2));
+
+    students[0].addCandidates([correctors[0], correctors[1]]);
+    students[1].addCandidates([correctors[0], correctors[1]]);
+    students[2].addCandidates([correctors[1], correctors[0]]);
+    students[3].addCandidates([correctors[1], correctors[0]]);
+    students[4].addCandidates([correctors[1], correctors[0]]);
+
+    correctors[0].addCandidates([students[3], students[2], students[0], students[1], students[4]]);
+    correctors[1].addCandidates([students[1], students[3], students[0], students[2], students[4]]);
+
+    return {students, correctors};
+}
+
+// more students than correctors, but correctors with capacity
+exports.genProblemCapacities = (n, capacities) => {
+    const students = Array.from({length: n}, (v, i) => new Player(`Student${i}`));
+    const correctors = [];
+    Array.from({length: capacities.length}).forEach((v, i) => {
+        Array.from({length: capacities[i]}).forEach((w, j) => {
+            correctors.push(new Player(`Corrector${i}_${j}`));
+        })
+    });
+
+
+    students.forEach(student => {
+        student.addCandidates(correctors)
+    });
+    const reversedStudents = students.slice().reverse();
+    correctors.forEach(corrector => {
+        corrector.addCandidates(reversedStudents)
+    });
+
+    // console.log(students);
+    // console.log(correctors);
+    return {students, correctors};
+}
+
+exports.genProblemHospitalCapacities = (n, capacities) => {
+    const students = Array.from({length: n}, (v, i) => new Player(`Student${i}`));
+    const correctors = capacities.map((capacity, i) =>
+            new Player(`Corrector${i}`,capacity)
+    );
+
+    students.forEach(student => {
+        student.addCandidates(correctors);
+    });
+    const reversedStudents = students.slice().reverse();
+    correctors.forEach(corrector => {
+        corrector.addCandidates(reversedStudents);
+    });
+
+     // console.log(students);
+     // console.log(correctors);
+    return {students, correctors};
+}

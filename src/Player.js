@@ -1,11 +1,11 @@
 module.exports = class Player {
 
-    constructor(name) {
+    constructor(name, capacity = 1) {
         this.name = name;
-        this.fiance = null;
         this.candidates = [];
         this.rankTable = {};
-        this.maxRank = undefined;
+        this.capacity = capacity;
+        this.fiance = null;
     }
 
     addCandidates(candidates) {
@@ -18,24 +18,41 @@ module.exports = class Player {
         // console.log(`${this.name} add candidate:`, p.name)
         this.candidates.push(p);
         this.rankTable[p.name] = this.candidates.length - 1;
-        this.maxRank = this.candidates.length;
+    }
+
+    removeCandidate(p) {
+        const index = this.candidates.indexOf(p);
+        this.candidates.splice(index,1);
+        delete this.rankTable[p.name];
+    }
+
+    hasCandidate() {
+        return this.candidates.length > 0;
+    }
+
+    topCandidate() {
+        return this.candidates[0];
+    }
+
+    nextCandidate() {
+        return this.candidates.shift();
+    }
+
+    successorsOf(p) {
+        const index = this.candidates.indexOf(p);
+       return this.candidates.slice(index+1);
     }
 
     rank(p) {
         if (this.rankTable.hasOwnProperty(p.name)) {
             return this.rankTable[p.name];
         }
-        // console.log(`${p.name} has no rank for ${this.name}, return ${this.maxRank}`);
-        return this.maxRank;
+        return Infinity;
     }
 
     prefers(p) {
         // console.log(`do ${this.name} prefers ${p.name} (${this.rank(p)}) over ${this.fiance.name} (${this.rank(this.fiance)}) ? -> ${this.rank(p) < this.rank(this.fiance)}`)
         return this.rank(p) < this.rank(this.fiance);
-    }
-
-    nextCandidate() {
-        return this.candidates.shift();
     }
 
     engageTo(p) {
