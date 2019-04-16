@@ -1,6 +1,4 @@
-const {genProblem1, genProblem3, genProblemCapacities, genProblemHospitalCapacities} = require('./problems');
-
-class State {
+module.exports = class State {
 
     constructor() {
         this.assignment = {};
@@ -79,6 +77,7 @@ class State {
 
     }
 
+
     galeShapley(players) {
 
         players.forEach(player => {
@@ -146,36 +145,4 @@ class State {
         return this;
     }
 
-
 }
-
-const run1 = () => {
-    // const {students, correctors} = genProblem1();
-    const {students, correctors} = genProblemCapacities(10000,[20,20,40,40,40,100,100]);
-
-    const state = new State();
-
-    const start = process.hrtime()
-    const results = state.galeShapley(students).extractMatching();
-    const end = process.hrtime(start);
-
-    // console.log('results =>', results);
-    console.info('%ds %dms',end[0],end[1]/1000000);
-}
-
-const run3 = () => {
-    // const {students, correctors} = genProblem3();
-    const {students, correctors} = genProblemHospitalCapacities(10,[2,2,4]);
-
-    const state = new State();
-
-    const start = process.hrtime()
-    const results = state.rothShapley(students).extractMatching();
-    const end = process.hrtime(start);
-
-    console.log('results =>', results);
-    console.info('%ds %dms',end[0],end[1]/1000000);
-}
-
-// run1();
-run3();

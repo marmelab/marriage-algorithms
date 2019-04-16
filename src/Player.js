@@ -5,7 +5,6 @@ module.exports = class Player {
         this.candidates = [];
         this.rankTable = {};
         this.capacity = capacity;
-        this.fiance = null;
     }
 
     addCandidates(candidates) {
@@ -15,14 +14,13 @@ module.exports = class Player {
     }
 
     addCandidate(p) {
-        // console.log(`${this.name} add candidate:`, p.name)
         this.candidates.push(p);
         this.rankTable[p.name] = this.candidates.length - 1;
     }
 
     removeCandidate(p) {
         const index = this.candidates.indexOf(p);
-        this.candidates.splice(index,1);
+        this.candidates.splice(index, 1);
         delete this.rankTable[p.name];
     }
 
@@ -40,7 +38,7 @@ module.exports = class Player {
 
     successorsOf(p) {
         const index = this.candidates.indexOf(p);
-       return this.candidates.slice(index+1);
+        return this.candidates.slice(index + 1);
     }
 
     rank(p) {
@@ -50,27 +48,4 @@ module.exports = class Player {
         return Infinity;
     }
 
-    prefers(p) {
-        // console.log(`do ${this.name} prefers ${p.name} (${this.rank(p)}) over ${this.fiance.name} (${this.rank(this.fiance)}) ? -> ${this.rank(p) < this.rank(this.fiance)}`)
-        return this.rank(p) < this.rank(this.fiance);
-    }
-
-    engageTo(p) {
-        if (p.fiance) {
-            p.fiance.fiance = null;
-        }
-        p.fiance = this;
-        if (this.fiance) {
-            this.fiance.fiance = null;
-        }
-        this.fiance = p;
-    }
-
-    swapWith(p) {
-        console.log("%s & %s swap partners", this.name, p.name);
-        const thisFiance = this.fiance;
-        const pFiance = p.fiance;
-        this.engageTo(pFiance);
-        p.engageTo(thisFiance);
-    }
 }

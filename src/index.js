@@ -1,43 +1,26 @@
-const {genProblem2 } = require('./problems');
-const {engageEveryone } = require('./gale-shapley');
+const {genProblem1, genProblem3, genProblemCapacities, genProblemHospitalCapacities} = require('./problems');
+const State = require('./State');
 
-function isStable(population1, population2) {
-    population1.forEach(p1 => population2.forEach(p2 => {
-            if (p1.prefers(p2) && p2.prefers(p1)) {
-                return false;
-            }
-        }
-    ));
-    return true;
+const runGaleShapley = ({students,correctors}) => {
+    const state = new State();
+    const start = process.hrtime()
+    const results = state.galeShapley(students).extractMatching();
+    const end = process.hrtime(start);
+
+    // console.log('results =>', results);
+    console.info('%ds %dms',end[0],end[1]/1000000);
+}
+
+const runRothShapley = ({students,correctors}) => {
+    const state = new State();
+    const start = process.hrtime()
+    const results = state.rothShapley(students).extractMatching();
+    const end = process.hrtime(start);
+
+    console.log('results =>', results);
+    console.info('%ds %dms',end[0],end[1]/1000000);
 }
 
 
-
-const doMarriage = () => {
-
-    const {students, correctors} = genProblem2();
-    // const {students, correctors} = genProblemN(4);
-    // const {students,correctors} = genProblemCapacities(100, [30, 30, 30,10]);
-
-    console.log(students);
-    console.log(correctors);
-
-    engageEveryone([...students, ...correctors]);
-    // engageEveryone(students);
-
-    students.forEach(student => {
-        console.log(`${student.name} is engaged with ${student.fiance.name}`);
-    })
-    console.log(`Stable = ${isStable(students, correctors) ? "Yes" : "No"}`);
-
-    // console.log('swap');
-    // students[1].swapWith(students[3]);
-    // students[0].swapWith(students[3]);
-    //
-    // students.forEach(student => {
-    //     console.log(`${student.name} is engaged with ${student.fiance.name}`);
-    // })
-    // console.log(`Stable = ${isStable(students, correctors) ? "Yes" : "No"}`);
-}
-
-doMarriage();
+runGaleShapley(genProblemCapacities(1000,[20,20,40,40,40,100,100]));
+runRothShapley(genProblemHospitalCapacities(10,[2,2,4]));
