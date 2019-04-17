@@ -7,10 +7,10 @@ module.exports = class State {
     engage(player1, player2) {
         // console.log('engage', player1.name, player2.name);
 
-        if(!this.assignment.hasOwnProperty(player1.name)) {
+        if (!this.assignment.hasOwnProperty(player1.name)) {
             this.assignment[player1.name] = [];
         }
-        if(!this.assignment.hasOwnProperty(player2.name)) {
+        if (!this.assignment.hasOwnProperty(player2.name)) {
             this.assignment[player2.name] = [];
         }
 
@@ -24,8 +24,8 @@ module.exports = class State {
         const indexPlayer2 = this.assignment[player1.name].indexOf(player2);
         const indexPlayer1 = this.assignment[player2.name].indexOf(player1);
 
-        this.assignment[player1.name].splice(indexPlayer2,1);
-        this.assignment[player2.name].splice(indexPlayer1,1);
+        this.assignment[player1.name].splice(indexPlayer2, 1);
+        this.assignment[player2.name].splice(indexPlayer1, 1);
         // console.log('state', this.extractMatching());
     }
 
@@ -47,7 +47,7 @@ module.exports = class State {
 
         this.assignment[player.name].forEach(partner => {
             const rank = player.rank(partner);
-            if(rank > max) {
+            if (rank > max) {
                 max = rank;
                 worst = partner;
             }
@@ -57,14 +57,14 @@ module.exports = class State {
 
     isSingle(player) {
         // console.log('isSingle', player.name);
-        if(!this.assignment.hasOwnProperty(player.name)) {
+        if (!this.assignment.hasOwnProperty(player.name)) {
             return true;
         }
         return this.assignment[player.name].length === 0;
     }
 
     allAssigned(players) {
-        const unassignedPlayers = players.filter((player) => this.isSingle(player) && player.hasCandidate()>0);
+        const unassignedPlayers = players.filter((player) => this.isSingle(player) && player.hasCandidate() > 0);
         return unassignedPlayers.length === 0;
     }
 
@@ -93,7 +93,7 @@ module.exports = class State {
                 const currentPartnerOfCandidate = this.currentPartner(candidate);
                 // console.log('current partner', currentPartnerOfCandidate);
                 if (candidate.rank(player) < candidate.rank(currentPartnerOfCandidate)) {
-                    this.unEngage(candidate,currentPartnerOfCandidate);
+                    this.unEngage(candidate, currentPartnerOfCandidate);
                     this.engage(player, candidate);
                 }
             }
@@ -106,6 +106,35 @@ module.exports = class State {
         return this;
     }
 
+    // from https://arxiv.org/pdf/1408.2969.pdf
+    extendedGaleShapley(players) {
+
+        players.forEach(player => {
+                if (this.isSingle(player) && player.hasCandidate()) {
+                    const candidate = player.topCandidate();
+                    if (this.isSingle(candidate)) {
+                        this.engage(player, candidate);
+                    } else {
+                        const currentPartnerOfCandidate = this.currentPartner(candidate);
+                        this.unEngage(candidate, currentPartnerOfCandidate);
+                        this.engage(player, candidate);
+
+                        const successors = candidate.successorsOf(player);
+                        successors.forEach(successor => {
+                            successor.removeCandidate(candidate);
+                            candidate.removeCandidate(successor);
+                        });
+                    }
+                }
+            }
+        );
+
+        if (!this.allAssigned(players)) {
+            return this.extendedGaleShapley(players);
+        }
+
+        return this;
+    }
 
     // 0. Assign all residents to be unmatched, and all hospitals to be totally unsubscribed.
     // 1. Take any unmatched resident with a non-empty preference list, r, and consider their most preferred hospital, h.
