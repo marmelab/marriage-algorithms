@@ -1,5 +1,4 @@
 module.exports = class Player {
-
     constructor(name, capacity = 1) {
         this.name = name;
         this.candidates = [];
@@ -47,5 +46,4 @@ module.exports = class Player {
         }
         return Infinity;
     }
-
-}
+};

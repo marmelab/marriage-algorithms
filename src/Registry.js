@@ -1,5 +1,4 @@
-module.exports = class State {
-
+module.exports = class Registry {
     constructor() {
         this.assignment = {};
     }
@@ -7,6 +6,7 @@ module.exports = class State {
     engage(player1, player2) {
         // console.log('engage', player1.name, player2.name);
 
+        // Object.prototype.hasOwnProperty.call(foo, "bar"s
         if (!this.assignment.hasOwnProperty(player1.name)) {
             this.assignment[player1.name] = [];
         }
@@ -19,7 +19,7 @@ module.exports = class State {
         // console.log('state', this.extractMatching());
     }
 
-    unEngage(player1, player2) {
+    disengage(player1, player2) {
         // console.log('unEngage', player1.name, player2.name);
         const indexPlayer2 = this.assignment[player1.name].indexOf(player2);
         const indexPlayer1 = this.assignment[player2.name].indexOf(player1);
@@ -37,11 +37,19 @@ module.exports = class State {
         return this.assignment[player.name].length === player.capacity;
     }
 
+    isNotEngaged(player) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (!this.assignment.hasOwnProperty(player.name)) {
+            return true;
+        }
+        return this.assignment[player.name].length === 0;
+    }
+
     currentPartner(player) {
         return this.assignment[player.name][0];
     }
 
-    worstCurrentPartner(player) {
+    worstPartner(player) {
         let max = -1;
         let worst = null;
 
@@ -64,7 +72,9 @@ module.exports = class State {
     }
 
     allAssigned(players) {
-        const unassignedPlayers = players.filter((player) => this.isSingle(player) && player.hasCandidate() > 0);
+        const unassignedPlayers = players.filter(
+            player => this.isSingle(player) && player.hasCandidate() > 0
+        );
         return unassignedPlayers.length === 0;
     }
 
@@ -74,12 +84,9 @@ module.exports = class State {
             acc[name] = this.assignment[name].map(player => player.name);
             return acc;
         }, {});
-
     }
 
-
     galeShapley(players) {
-
         players.forEach(player => {
             if (!this.isSingle(player)) {
                 // do nothing
@@ -93,7 +100,7 @@ module.exports = class State {
                 const currentPartnerOfCandidate = this.currentPartner(candidate);
                 // console.log('current partner', currentPartnerOfCandidate);
                 if (candidate.rank(player) < candidate.rank(currentPartnerOfCandidate)) {
-                    this.unEngage(candidate, currentPartnerOfCandidate);
+                    this.disengage(candidate, currentPartnerOfCandidate);
                     this.engage(player, candidate);
                 }
             }
@@ -108,26 +115,24 @@ module.exports = class State {
 
     // from https://arxiv.org/pdf/1408.2969.pdf
     extendedGaleShapley(players) {
-
         players.forEach(player => {
-                if (this.isSingle(player) && player.hasCandidate()) {
-                    const candidate = player.topCandidate();
-                    if (this.isSingle(candidate)) {
-                        this.engage(player, candidate);
-                    } else {
-                        const currentPartnerOfCandidate = this.currentPartner(candidate);
-                        this.unEngage(candidate, currentPartnerOfCandidate);
-                        this.engage(player, candidate);
+            if (this.isSingle(player) && player.hasCandidate()) {
+                const candidate = player.topCandidate();
+                if (this.isSingle(candidate)) {
+                    this.engage(player, candidate);
+                } else {
+                    const currentPartnerOfCandidate = this.currentPartner(candidate);
+                    this.disengage(candidate, currentPartnerOfCandidate);
+                    this.engage(player, candidate);
 
-                        const successors = candidate.successorsOf(player);
-                        successors.forEach(successor => {
-                            successor.removeCandidate(candidate);
-                            candidate.removeCandidate(successor);
-                        });
-                    }
+                    const successors = candidate.successorsOf(player);
+                    successors.forEach(successor => {
+                        successor.removeCandidate(candidate);
+                        candidate.removeCandidate(successor);
+                    });
                 }
             }
-        );
+        });
 
         if (!this.allAssigned(players)) {
             return this.extendedGaleShapley(players);
@@ -145,19 +150,17 @@ module.exports = class State {
     //    Then, for each successor, s, to r' in the preference list of h, delete the pair (s, h) from the game. Go to 4.
     // 4. Go to 1 until there are no such residents left, then end.
     rothShapley(players) {
-
         players.forEach(player => {
-
-            if (this.isSingle(player) && player.hasCandidate()) {
+            if (this.isNotEngaged(player) && player.hasCandidate()) {
                 const candidate = player.topCandidate();
                 this.engage(player, candidate);
                 if (this.isOverEngaged(candidate)) {
-                    const worstPartnerOfCandidate = this.worstCurrentPartner(candidate);
-                    this.unEngage(worstPartnerOfCandidate, candidate);
+                    const worstPartnerOfCandidate = this.worstPartner(candidate);
+                    this.disengage(worstPartnerOfCandidate, candidate);
                 }
 
                 if (this.isFullyEngaged(candidate)) {
-                    const worstPartnerOfCandidate = this.worstCurrentPartner(candidate);
+                    const worstPartnerOfCandidate = this.worstPartner(candidate);
                     const successors = candidate.successorsOf(worstPartnerOfCandidate);
                     successors.forEach(successor => {
                         successor.removeCandidate(candidate);
@@ -173,5 +176,4 @@ module.exports = class State {
 
         return this;
     }
-
-}
+};
