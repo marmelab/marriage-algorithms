@@ -1,8 +1,19 @@
 # marriage-algorithms
 Experiments with stable marriage algorithms
 
+## Description
+
+This package implements two kinds of algorithms:
+- the Gale-Shapley algorithm that solves stable marriage problems
+- the Roth-Shapley algorithm, also known as deferred acceptance algorithm, 
+which solves the Resident-Hospital problem (i.e. marriage problems with 
+capacities)
+
+## References
+
 - [Nice tutorial](http://www.ams.org/publicoutreach/feature-column/fc-2015-03)
-- [Implementations](https://github.com/daffidwilde/matching) in Python: Gale-Shapley en Resident-Hospital (Roth-Shapley)
+- [Implementations](https://github.com/daffidwilde/matching) in Python of 
+Gale-Shapley and Roth-Shapley (Resident-Hospital) algorithms
 - [Rosetta code](https://rosettacode.org/wiki/Stable_marriage_problem#JavaScript)
 - [Hospital algorithm](https://arxiv.org/pdf/1408.2969.pdf)
 - Several implementations of [Stable marriage problem](https://github.com/alextanhongpin/stable-marriage-problem)
