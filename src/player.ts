@@ -1,4 +1,4 @@
-import { pull, omit } from 'lodash';
+import { without, omit } from 'lodash';
 
 type RankTable = { [playername: string]: number };
 
@@ -34,7 +34,7 @@ export const removeCandidate = (
     candidate: Player,
 ): Player => ({
     name,
-    candidates: pull(candidates, candidate),
+    candidates: without(candidates, candidate),
     rankTable: omit(rankTable, candidate.name),
     capacity,
 });
