@@ -34,12 +34,8 @@ export const isOverEngaged = (registry: Registry, player: Player): boolean =>
 export const isFullyEngaged = (registry: Registry, player: Player): boolean =>
     numberOfEngagments(registry, player) === player.capacity;
 
-// export const isNotEngaged = (registry: Registry, player: Player): boolean =>
-//     numberOfEngagments(registry, player) === 0;
-
 export const isSingle = (registry: Registry, player: Player): boolean =>
     numberOfEngagments(registry, player) === 0;
-//     !registry.hasOwnProperty(player.name) ? true : registry[player.name].length === 0;
 
 export const currentPartner = (registry: Registry, player: Player): Player | null =>
     numberOfEngagments(registry, player) > 0 ? registry[player.name][0] : null;
