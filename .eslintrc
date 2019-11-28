@@ -5,10 +5,6 @@
     },
     "parserOptions": {
         "ecmaVersion": 6
-//        "sourceType": "module",
-//        "ecmaFeatures": {
-//            "objectLiteralDuplicateProperties": false
-//        }
     },
     "extends": [
         "plugin:@typescript-eslint/recommended",
