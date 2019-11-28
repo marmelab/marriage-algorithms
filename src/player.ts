@@ -1,5 +1,3 @@
-import { without, omit } from 'lodash';
-
 type RankTable = { [playername: string]: number };
 
 export type Player = {
@@ -16,39 +14,35 @@ export const createPlayer = (name: string, capacity = 1): Player => ({
     capacity,
 });
 
-export const addCandidate = (
-    { name, candidates, rankTable, capacity }: Player,
-    candidate: Player,
-): Player => ({
-    name,
-    candidates: [...candidates, candidate],
-    rankTable: { ...rankTable, [candidate.name]: candidates.length },
-    capacity,
-});
+export const addCandidate = (player: Player, candidate: Player): void => {
+    player.candidates.push(candidate);
+    player.rankTable[candidate.name] = player.candidates.length - 1;
+};
 
-export const addCandidates = (player: Player, candidates: Player[]): Player =>
-    candidates.reduce((acc, candidate) => addCandidate(acc, candidate), player);
+export const addCandidates = (player: Player, candidates: Player[]): void => {
+    candidates.forEach(candidate => {
+        addCandidate(player, candidate);
+    });
+};
 
-export const removeCandidate = (
-    { name, candidates, rankTable, capacity }: Player,
-    candidate: Player,
-): Player => ({
-    name,
-    candidates: without(candidates, candidate),
-    rankTable: omit(rankTable, candidate.name),
-    capacity,
-});
+export const removeCandidate = (player: Player, candidate: Player): void => {
+    const index = player.candidates.indexOf(candidate);
+    player.candidates.splice(index, 1);
+    delete player.rankTable[candidate.name];
+};
 
 export const hasCandidate = ({ candidates }: Player): boolean => candidates.length > 0;
 
 export const topCandidate = ({ candidates }: Player): Player => candidates[0];
 
-export const nextCandidate = ({ name, candidates, rankTable, capacity }: Player): Player => ({
-    name,
-    candidates: candidates.slice(1),
-    rankTable: omit(rankTable, candidates[0].name),
-    capacity,
-});
+export const nextCandidate = (player: Player): Player | null => {
+    const topCandidate = player.candidates.shift();
+    if (topCandidate) {
+        delete player.rankTable[topCandidate.name];
+        return topCandidate;
+    }
+    return null;
+};
 
 export const successorsOf = ({ candidates }: Player, candidate: Player): Player[] =>
     candidates.slice(1 + candidates.indexOf(candidate));
