@@ -11,9 +11,9 @@
 //        }
     },
     "extends": [
-        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
         "plugin:prettier/recommended",
-        "plugin:jest/recommended"
+        "prettier/@typescript-eslint"
     ],
     "plugins": ["prettier", "import" ],
     "rules": {
@@ -22,7 +22,7 @@
             {
                 "singleQuote": true,
                 "tabWidth": 4,
-//                "trailingComma": "all",
+                "trailingComma": "all",
                 "printWidth": 100
             }
         ],

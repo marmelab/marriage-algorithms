@@ -1,5 +1,17 @@
-const { genProblemCapacities, genProblemHospitalCapacities } = require('./problems');
-const Registry = require('./Registry');
+import { createPlayer, addCandidate, removeCandidate } from './player';
+
+let p1 = createPlayer('player 1', 1);
+const p2 = createPlayer('player 2', 1);
+
+p1 = addCandidate(p1, p2);
+
+console.log('add', p1);
+
+p1 = removeCandidate(p1, p2);
+console.log('remove', p1);
+
+/*import { genProblemCapacities, genProblemHospitalCapacities } from './problems';
+import Registry from './Registry';
 
 const runGaleShapley = ({ students }) => {
     const registry = new Registry();
@@ -23,3 +35,6 @@ const runRothShapley = ({ students }) => {
 
 runGaleShapley(genProblemCapacities(5, [2, 3]));
 runRothShapley(genProblemHospitalCapacities(5000, [20, 20, 40, 40, 40, 100, 100]));
+
+
+ */
