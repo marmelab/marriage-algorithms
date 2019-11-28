@@ -12,18 +12,17 @@ import {
 
 describe('Player', () => {
     it('should create a player', () => {
-        const p = createPlayer('player', 1);
-        expect(p.name).toEqual('player');
+        const player = createPlayer('player', 1);
+        expect(player.name).toEqual('player');
     });
 
     it('should add a candidate', () => {
-        const player = createPlayer('player', 1);
         const candidate = createPlayer('candidate', 1);
-        const newP = addCandidate(player, candidate);
-        expect(hasCandidate(newP)).toBeTruthy();
-        expect(topCandidate(newP)).toBe(candidate);
-        expect(rank(newP, candidate)).toEqual(0);
-        expect(successorsOf(newP, candidate)).toHaveLength(0);
+        const player = addCandidate(createPlayer('player', 1), candidate);
+        expect(hasCandidate(player)).toBeTruthy();
+        expect(topCandidate(player)).toBe(candidate);
+        expect(rank(player, candidate)).toEqual(0);
+        expect(successorsOf(player, candidate)).toHaveLength(0);
     });
 
     it('should add two candidates', () => {
