@@ -1,0 +1,35 @@
+{
+  "name": "marriage-algorithms",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/index.ts",
+  "private": true,
+  "dependencies": {
+    "@types/lodash": "^4.14.149",
+    "lodash": "^4.17.15"
+  },
+  "scripts": {
+    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "build": "tsc -p .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint --ext .js,.ts,.tsx \"./src/**/*.{js,ts,tsx}\""
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.23",
+    "@types/node": "^12.12.14",
+    "@typescript-eslint/eslint-plugin": "^2.6.0",
+    "@typescript-eslint/parser": "^2.6.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^23.0.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "jest": "^24.9.0",
+    "nodemon": "^2.0.1",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.2.0",
+    "ts-node": "^8.5.3",
+    "typescript": "^3.7.2"
+  }
+}
