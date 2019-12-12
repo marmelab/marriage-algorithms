@@ -5,7 +5,7 @@ import { galeShapley } from '../algorithms';
 /*
  * To be able to use Roth-Shapley algorithm
  * each Player should have a capacity of 1
- * Therefore, we create as many hospitals as needed to simulate capacites
+ * Therefore, we create as many hospitals as needed to simulate capacities
  * for example Hospital-0_0, Hospital-0_1, Hospital-0_2 to simulate an Hospital-0 with capacity 3
  */
 export const createHospitalsResidentsWithoutCapacityProblem = (
@@ -39,7 +39,6 @@ export const createHospitalsResidentsWithoutCapacityProblem = (
 // We have 10 residents, whose names are Resident-0, Resident-1, ..., Resident-9
 // Each Resident prefers Hospital-0 first, and then Hospital-1 and Hospital-2
 // But each Hospital prefers Resident-9, Resident-8, etc.
-// The current Roth-Shapley implementation gives preference to Hospitals instead of Residents
 export const runHospitalsResidentsWithoutCapacityProblem = (): void => {
     const hospitalsResidentsProblemWithoutCapacity = createHospitalsResidentsWithoutCapacityProblem(
         10,

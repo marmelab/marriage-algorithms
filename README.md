@@ -1,13 +1,100 @@
-# marriage-algorithms
-Experiments with stable marriage algorithms
+# Stable marriage algorithms
 
 ## Description
 
-This package implements two kinds of algorithms:
-- the Gale-Shapley algorithm that solves stable marriage problems
-- the Roth-Shapley algorithm, also known as deferred acceptance algorithm, 
-which solves the Resident-Hospital problem (i.e. marriage problems with 
+This package implements two algorithms:
+- the [**Gale-Shapley**](https://en.wikipedia.org/wiki/Gale%E2%80%93Shapley_algorithm) algorithm that solves [stable marriage problems](https://en.wikipedia.org/wiki/Stable_marriage_problem)
+- the **Roth-Shapley** algorithm, also known as deferred acceptance algorithm, 
+which solves the Hospitals-Residents problem (*i.e.* stable marriage problems with 
 capacities)
+
+#### Examples:
+**Man-Woman stable marriage problem**
+
+As explained [here](https://en.wikipedia.org/wiki/Stable_marriage_problem) a stable marriage problem is the following:
+"Given n men and n women, where each person has ranked all members of the opposite sex in order of preference, marry the men and women together such that there are no two people of opposite sex who would both rather have each other than their current partners. When there are no such pairs of people, the set of marriages is deemed stable."
+
+For example, let us consider four men: Albert, Bob, Charles and Denis, and four women: Alice, Brigitte, Diane and Emily.
+
+Each man, respectively woman, has its own preference. For instance:
+
+| Man   | Preferences (preferred first) |
+|-----  |-------------------------------|
+|Albert | Alice, Brigitte, Diane, Emily|
+|Bob    | Alice, Emily, Diane, Brigitte|
+|Charles| Brigitte, Alice, Diane, Emily|
+|Denis  | Emily, Brigitte, Diane, Alice|
+
+| Woman  | Preferences (preferred first) |
+|-----   |-------------------------------|
+|Alice   | Denis, Charles, Albert, Bob|
+|Brigitte| Bob, Denis, Albert, Charles|
+|Diane   | Denis, Albert, Bob, Charles|
+|Emily   | Charles, Bob, Albert, Denis|
+
+A naive solution could consist in satisfying women first. For instance we can marry Alice with Denis, Brigitte with Bob, Diane with Albert (2nd choice), and Emily with Charles.
+This solution can be represented by the following matrix:
+
+| Woman  | Preferences (preferred first) |
+|-----   |-------------------------------|
+|Alice   | **Denis**, ~~Charles~~, ~~Albert~~, ~~Bob~~|
+|Brigitte| **Bob**, ~~Denis~~, ~~Albert~~, ~~Charles~~|
+|Diane   | ~~Denis~~, **Albert**, ~~Bob~~, ~~Charles~~|
+|Emily   | **Charles**, ~~Bob~~, ~~Albert~~, ~~Denis~~|
+
+ Man   | Preferences (preferred first) |
+|-----  |-------------------------------|
+|Albert | ~~Alice~~, ~~Brigitte~~, **Diane**, ~~Emily~~|
+|Bob    | ~~Alice~~, ~~Emily~~, ~~Diane~~, **Brigitte**|
+|Charles| ~~Brigitte~~, ~~Alice~~, ~~Diane~~, **Emily**|
+|Denis  | ~~Emily~~, ~~Brigitte~~, ~~Diane~~, **Alice**|
+
+But is this solution a *stable marriage*?
+
+Unfortunately, this is not a stable solution to the initial problem.
+Let us consider Diane and Denis for instance. They would both be happier if we marry them together
+
+The **Gale-Shapley** algorithm computes a solution which is stable:
+
+ Man   | Preferences (preferred first) |
+|-----  |-------------------------------|
+|Albert | ~~Alice~~, ~~Brigitte~~, **Diane**, ~~Emily~~|
+|Bob    | ~~Alice~~, **Emily**, ~~Diane~~, ~~Brigitte~~|
+|Charles| ~~Brigitte~~, **Alice**, ~~Diane~~, ~~Emily~~|
+|Denis  | ~~Emily~~, **Brigitte**, ~~Diane~~, ~~Alice~~|
+
+| Woman  | Preferences (preferred first) |
+|-----   |-------------------------------|
+|Alice   | ~~Denis~~, **Charles**, ~~Albert~~, ~~Bob~~|
+|Brigitte| ~~Bob~~, **Denis**, ~~Albert~~, ~~Charles~~|
+|Diane   | ~~Denis~~, **Albert**, ~~Bob~~, ~~Charles~~|
+|Emily   | ~~Charles~~, **Bob**, ~~Albert~~, ~~Denis~~|
+
+No one has its first choice but this 'marriage' is said stable because you cannot find two players who would prefer to be married together.
+
+**Hospitals-Residents problem**
+
+The Hospitals-Residents problem, also known as the College-Admission problem, is a variation of the previous one where we want to assign graduating medical students (called residents) to hospitals. Each hospital has a positive capacity.
+Both Residents and Hospital have an ordered list of preferences.
+
+Suppose that we have 3 hospitals (called Hospital-0, Hospital-1, and Hospital-2) with respective capacities 3, 3 and 4.
+Suppose we have 10 residents (whose names are Resident-0, Resident-1, ..., Resident-9)
+which have to be assigned to an hospital. 
+Each Resident prefers Hospital-0 first, and then Hospital-1 over Hospital-2, but each Hospital prefers residents as following: Resident-9, Resident-8, etc.
+
+To find a stable matching assignment we have to possibilities:
+- we can transform the current Hospitals-Residents problem into a stable marriage problem (i.e. a problem where the number of participants of each side is equal). 
+ A simple approach consists in creating as many hospitals as needed to simulate capacities.\
+ For example, to simulate Hospital-0 which has a capacity of 3, we can create 3 participants: Hospital-0_0, Hospital-0_1, and Hospital-0_2 (which have a capacity equals to 1). 
+ Following this approach for Hospital-1 and Hospital-2 we are back to a classical stable marriage problem and the Gale-shapley can be used to find a solution.
+
+- another possibility consists in modifying the Gale-Shapley algorithm to handle capacities during the resolution. This new algorithm is called Roth-Shapley algorithm
+
+#### Data structure
+
+#### Algorithms
+
+
 
 ## References
 
