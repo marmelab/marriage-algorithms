@@ -21,8 +21,12 @@ import {
     Registry,
     Matching,
 } from './registry';
+import { Problem } from './problem';
 
-export const galeShapley = (players: Player[]): Matching => {
+/*
+ * Gale-Shapley algorithm can be used when the maximal capacity of each Player is 1
+ */
+export const galeShapley = ({ players1: players }: Problem): Matching => {
     const galeShapleyAux = (registry: Registry, players: Player[]): void => {
         players.forEach(player => {
             if (!isSingle(registry, player)) {
@@ -60,15 +64,20 @@ export const galeShapley = (players: Player[]): Matching => {
     galeShapleyAux(registry, players);
     return extractMatching(registry);
 };
-// 0. Assign all residents to be unmatched, and all hospitals to be totally unsubscribed.
-// 1. Take any unmatched resident with a non-empty preference list, r, and consider their most preferred hospital, h.
-//    Match them to one another.
-// 2. If, as a result of this new matching, h is now over-subscribed, find the worst resident currently assigned to h, r'.
-//    Set r' to be unmatched and remove them from the hospital's matching. Go to 3.
-// 3. If h is at capacity (fully subscribed) then find their worst current match r'.
-//    Then, for each successor, s, to r' in the preference list of h, delete the pair (s, h) from the game. Go to 4.
-// 4. Go to 1 until there are no such residents left, then end.
-export const rothShapley = (players: Player[]): Matching => {
+
+/*
+ * Roth-Shapley algorithm can be used when Players have a capacity greater than 1
+ *
+ * 0. Assign all residents to be unmatched, and all hospitals to be totally unsubscribed.
+ * 1. Take any unmatched resident with a non-empty preference list, r, and consider their most preferred hospital, h.
+ *    Match them to one another.
+ * 2. If, as a result of this new matching, h is now over-subscribed, find the worst resident currently assigned to h, r'.
+ *    Set r' to be unmatched and remove them from the hospital's matching. Go to 3.
+ * 3. If h is at capacity (fully subscribed) then find their worst current match r'.
+ *    Then, for each successor, s, to r' in the preference list of h, delete the pair (s, h) from the game. Go to 4.
+ * 4. Go to 1 until there are no such residents left, then end.
+ */
+export const rothShapley = ({ players1: players }: Problem): Matching => {
     const rothShapleyAux = (registry: Registry, players: Player[]): void => {
         players.forEach(player => {
             if (isSingle(registry, player) && hasCandidate(player)) {
