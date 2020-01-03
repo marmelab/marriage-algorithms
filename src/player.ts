@@ -1,3 +1,16 @@
+/*
+ * A Player is a partner in a marriage problem
+ * For instance, it can be
+ * - a Male or a Female in a 'classical' marriage problem
+ * - a Resident or an Hospital in a Hospitals-Residents allocation problem
+ * - a Student or an School in a School choice problem
+ *
+ * A Player has a maximal capacity: 1 in a 'classical' single-partner marriage problem, but it can be greater for
+ * a School which has a fixed capacity for instance
+ * A Player should also have a strictly ordered list of preferences: candidates is this list
+ * rankTable is used to speedup the algorithms: given a candidate's name, the table gives the position of this candidate
+ * in the list of preferences
+ */
 type RankTable = { [playername: string]: number };
 
 export type Player = {
@@ -7,11 +20,16 @@ export type Player = {
     capacity: number;
 };
 
+export const toString = ({ name, candidates, capacity }: Player): string =>
+    `${name}${capacity > 1 ? ` (capacity=${capacity})` : ''} prefers: ${candidates
+        .map(({ name }) => name)
+        .join(', ')}`;
+
 export const createPlayer = (name: string, capacity = 1): Player => ({
     name,
     candidates: [], // list of candidates
     rankTable: {}, // associate a preference rank to each candidate's name
-    capacity,
+    capacity, // maximal number of partners to which this Player can be associated
 });
 
 export const addCandidate = (player: Player, candidate: Player): void => {

@@ -3,6 +3,9 @@ import { Player, rank, hasCandidate } from './player';
 export type Registry = { [playername: string]: Player[] };
 export type Matching = { [playername: string]: string[] };
 
+/*
+ * A Registry stores the list of partners to which a given Player is associated
+ */
 export const createRegistry = (): Registry => ({});
 
 export const engage = (registry: Registry, player1: Player, player2: Player): void => {
