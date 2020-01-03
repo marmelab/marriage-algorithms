@@ -52,7 +52,7 @@ This solution can be represented by the following matrix:
 But is this solution a *stable marriage*?
 
 Unfortunately, this is not a stable solution to the initial problem.
-Let us consider Diane and Denis for instance. They would both be happier if we marry them together
+Let us consider Diane and Denis for instance. They would both be happier if we marry them together (Diane prefers Denis to Albert, and Denis prefers Diane to Alice).
 
 The **Gale-Shapley** algorithm computes a solution which is stable:
 
@@ -75,22 +75,38 @@ No one has its first choice but this 'marriage' is said stable because you canno
 **Hospitals-Residents problem**
 
 The Hospitals-Residents problem, also known as the College-Admission problem, is a variation of the previous one where we want to assign graduating medical students (called residents) to hospitals. Each hospital has a positive capacity.
-Both Residents and Hospital have an ordered list of preferences.
+Both Residents and Hospitals have an ordered list of preferences.
 
 Suppose that we have 3 hospitals (called Hospital-0, Hospital-1, and Hospital-2) with respective capacities 3, 3 and 4.
 Suppose we have 10 residents (whose names are Resident-0, Resident-1, ..., Resident-9)
 which have to be assigned to an hospital. 
 Each Resident prefers Hospital-0 first, and then Hospital-1 over Hospital-2, but each Hospital prefers residents as following: Resident-9, Resident-8, etc.
 
-To find a stable matching assignment we have to possibilities:
+To find a stable matching assignment we have two possibilities:
 - we can transform the current Hospitals-Residents problem into a stable marriage problem (i.e. a problem where the number of participants of each side is equal). 
  A simple approach consists in creating as many hospitals as needed to simulate capacities.\
- For example, to simulate Hospital-0 which has a capacity of 3, we can create 3 participants: Hospital-0_0, Hospital-0_1, and Hospital-0_2 (which have a capacity equals to 1). 
+ For example, to simulate Hospital-0 which has a capacity of 3, we can create 3 participants: Hospital-0_0, Hospital-0_1, and Hospital-0_2 (where each one has a capacity equals to 1). 
  Following this approach for Hospital-1 and Hospital-2 we are back to a classical stable marriage problem and the Gale-shapley can be used to find a solution.
 
-- another possibility consists in modifying the Gale-Shapley algorithm to handle capacities during the resolution. This new algorithm is called Roth-Shapley algorithm
+- another possibility consists in modifying the Gale-Shapley algorithm to handle capacities during the resolution. This new algorithm is called Roth-Shapley algorithm, and isa bit more efficient, for this kind of problem, than the previous Gale-Shapley algorithm.
 
 #### Data structure
+In this library we consider two main data-stuctures: `Player` and `Registry`.
+
+A `Player` is a partner in a marriage problem
+(*i.e.* a Male or a Female in a 'classical' marriage problem, a Resident or an Hospital in a Hospitals-Residents allocation problem, a Student or a School in a School choice problem):
+* a `Player` has a name
+* a `Player` has a maximal capacity: 1 in a 'classical' single-partner marriage problem, but it can be greater for a School which has a fixed capacity for instance
+* a `Player` should also have a strictly ordered list of preferences (called `candidates`). `rankTable` is an auxiliary table used to speedup the algorithms: given a candidate's name, the table gives the position of this candidate in the list of preferences
+
+In addition to this data-structure, the `Player` modules offers several functions such as create a player, add a candidate in a list of preferences, remove a candidate from a list of preferences, retrieve the preferred candidate, etc.
+
+For efficiency reasons a `Player` is a mutable data-structure. In particular, `candidates` and `rankTable` are modified when a candidate is added or removed from a list of preferences.
+
+A `Registry` is a data-structure which stores the list of partners to which a given `Player` is associated.
+This is simply implemented by an object (*i.e.* a map) whose keys are players' name.
+
+The module offers functions to engage a player with another one, to disengage a player, to know if a player is fully engaged (according to its capacity), to know the worst partner of a player with whom it is engaged, etc.
 
 #### Algorithms
 
